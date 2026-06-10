@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import type { LogEntryDTO } from "@/lib/logParser"
 import { Badge } from "./Badge"
+import { getEntryDetail } from "./utils"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,7 +40,8 @@ export function EntriesTable({ entries }: { entries: LogEntryDTO[] }) {
         e.source?.toLowerCase().includes(query) ||
         e.processName?.toLowerCase().includes(query) ||
         e.status?.toLowerCase().includes(query) ||
-        e.message?.toLowerCase().includes(query)
+        e.message?.toLowerCase().includes(query) ||
+        getEntryDetail(e).toLowerCase().includes(query)
       return matchType && matchSearch
     })
   }, [entries, typeFilter, search])
@@ -93,15 +95,16 @@ export function EntriesTable({ entries }: { entries: LogEntryDTO[] }) {
           <TableHeader className="2 bg-background3 text-xs uppercase">
             <TableRow className="border-background4">
               <TableHead className="h-auto px-4 py-3">Fecha</TableHead>
-              <TableHead className="h-auto px-4 py-3">Host / VM</TableHead>
+              <TableHead className="h-auto px-4 py-3">Origen</TableHead>
               <TableHead className="h-auto px-4 py-3">Proceso</TableHead>
               <TableHead className="h-auto px-4 py-3">Estado</TableHead>
+              <TableHead className="h-auto px-4 py-3">Detalles</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {visible.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="2 px-4 py-6 text-center">
+                <TableCell colSpan={5} className="2 px-4 py-6 text-center">
                   Sin resultados
                 </TableCell>
               </TableRow>
@@ -120,18 +123,13 @@ export function EntriesTable({ entries }: { entries: LogEntryDTO[] }) {
                   {entry.source ?? "-"}
                 </TableCell>
                 <TableCell className="px-4 py-2">
-                  {entry.type === "VM_IDLE" ? (
-                    <span className="text-xs text-muted-foreground">
-                      {entry.message}
-                    </span>
-                  ) : (
-                    (entry.processName ?? (
-                      <span className="2 text-xs">{entry.message}</span>
-                    ))
-                  )}
+                  {entry.processName ?? "-"}
                 </TableCell>
                 <TableCell className="px-4 py-2">
                   <Badge type={entry.type} />
+                </TableCell>
+                <TableCell className="px-4 py-2 text-sm text-muted-foreground">
+                  {getEntryDetail(entry)}
                 </TableCell>
               </TableRow>
             ))}

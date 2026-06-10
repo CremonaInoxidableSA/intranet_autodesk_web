@@ -1,63 +1,67 @@
-"use client";
+"use client"
 
-import { useEffect, useRef, useState } from "react";
-import type { LogDataResponse } from "@/lib/logParser";
-import { StatsTable } from "./StatsTable";
-import { EntriesTable } from "./EntriesTable";
-import { ChartsView } from "./ChartsView";
-import { GlobalTable } from "./GlobalTable";
-import { exportToExcelMultiSheet, formatDuration } from "./utils";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react"
+import type { LogDataResponse } from "@/lib/logParser"
+import { StatsTable } from "./StatsTable"
+import { EntriesTable } from "./EntriesTable"
+import { ChartsView } from "./ChartsView"
+import { GlobalTable } from "./GlobalTable"
+import {
+  exportToExcelMultiSheet,
+  formatDuration,
+  getEntryDetail,
+} from "./utils"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
 export default function LogViewer() {
-  const [pcs, setPcs] = useState<string[]>([]);
-  const [selectedPC, setSelectedPC] = useState<string>("");
-  const [logData, setLogData] = useState<LogDataResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [view, setView] = useState<"tablas" | "graficos" | "global">("tablas");
-  const chartsRef = useRef<{ exportToPDF: () => Promise<void> }>(null);
+  const [pcs, setPcs] = useState<string[]>([])
+  const [selectedPC, setSelectedPC] = useState<string>("")
+  const [logData, setLogData] = useState<LogDataResponse | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<"tablas" | "graficos" | "global">("tablas")
+  const chartsRef = useRef<{ exportToPDF: () => Promise<void> }>(null)
 
   useEffect(() => {
     fetch("/api/logs")
       .then((r) => r.json())
       .then((data) => {
-        if (data.error) throw new Error(data.error);
-        setPcs(data.pcs as string[]);
-        if (data.pcs.length > 0) setSelectedPC(data.pcs[0]);
+        if (data.error) throw new Error(data.error)
+        setPcs(data.pcs as string[])
+        if (data.pcs.length > 0) setSelectedPC(data.pcs[0])
       })
-      .catch((e) => setError(String(e.message ?? e)));
-  }, []);
+      .catch((e) => setError(String(e.message ?? e)))
+  }, [])
 
   useEffect(() => {
-    if (!selectedPC) return;
+    if (!selectedPC) return
     const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      setLogData(null);
+      setLoading(true)
+      setError(null)
+      setLogData(null)
       try {
-        const r = await fetch(`/api/logs/${encodeURIComponent(selectedPC)}`);
-        const data = await r.json();
-        if (data.error) throw new Error(data.error);
-        setLogData(data as LogDataResponse);
+        const r = await fetch(`/api/logs/${encodeURIComponent(selectedPC)}`)
+        const data = await r.json()
+        if (data.error) throw new Error(data.error)
+        setLogData(data as LogDataResponse)
       } catch (e) {
-        setError(String(e instanceof Error ? e.message : e));
+        setError(String(e instanceof Error ? e.message : e))
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchData();
-  }, [selectedPC]);
+    }
+    fetchData()
+  }, [selectedPC])
 
   return (
-    <div className="flex flex-col gap-6 p-6 max-w-7xl mx-auto w-full">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6">
       <div className="flex flex-wrap items-center gap-4">
         <h1 className="text-xl font-bold">Monitor de Procesos</h1>
         <div className="flex gap-1">
@@ -65,7 +69,7 @@ export default function LogViewer() {
             variant={view === "tablas" ? "default" : "outline"}
             className={
               view === "tablas"
-                ? "bg-greencremona/30 border-greencremona text-greencremona"
+                ? "border-greencremona bg-greencremona/30 text-greencremona"
                 : ""
             }
             size="sm"
@@ -77,7 +81,7 @@ export default function LogViewer() {
             variant={view === "graficos" ? "default" : "outline"}
             className={
               view === "graficos"
-                ? "bg-greencremona/30 border-greencremona text-greencremona"
+                ? "border-greencremona bg-greencremona/30 text-greencremona"
                 : ""
             }
             size="sm"
@@ -89,7 +93,7 @@ export default function LogViewer() {
             variant={view === "global" ? "default" : "outline"}
             className={
               view === "global"
-                ? "bg-greencremona/30 border-greencremona text-greencremona"
+                ? "border-greencremona bg-greencremona/30 text-greencremona"
                 : ""
             }
             size="sm"
@@ -99,7 +103,7 @@ export default function LogViewer() {
           </Button>
         </div>
         {view !== "global" && (
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="ml-auto flex items-center gap-2">
             <label htmlFor="pc-select" className="text-sm">
               Equipo:
             </label>
@@ -132,23 +136,22 @@ export default function LogViewer() {
                     "Avg/Día": formatDuration(s.avgPerDaySeconds),
                     "Avg/Semana": formatDuration(s.avgPerWeekSeconds),
                     "Avg/Mes": formatDuration(s.avgPerMonthSeconds),
-                  }));
+                  }))
                   const entriesRows = logData.entries.map((e) => ({
                     Equipo: selectedPC,
                     Timestamp: e.timestamp,
-                    "Host/VM": e.source ?? "",
+                    Origen: e.source ?? "",
                     Proceso: e.processName ?? "",
-                    Estado: e.status ?? e.type,
-                    Mensaje: e.message ?? "",
-                    PID: e.pid ?? "",
-                  }));
+                    Estado: e.type,
+                    Detalles: getEntryDetail(e),
+                  }))
                   exportToExcelMultiSheet(
                     [
                       { name: "Tiempo promedio", rows: statsRows },
                       { name: "Registro de eventos", rows: entriesRows },
                     ],
-                    `reporte_${selectedPC}`,
-                  );
+                    `reporte_${selectedPC}`
+                  )
                 }}
                 title="Descargar Excel con ambas tablas"
               >
@@ -176,7 +179,7 @@ export default function LogViewer() {
       )}
 
       {loading && (
-        <div className="flex items-center justify-center py-16 2">
+        <div className="2 flex items-center justify-center py-16">
           Cargando logs…
         </div>
       )}
@@ -185,24 +188,22 @@ export default function LogViewer() {
         <>
           {view === "tablas" && (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <div className="rounded border border-background4 bg-background2 px-4 py-3">
-                  <p className="text-xs 2 uppercase tracking-wide">Eventos</p>
-                  <p className="text-2xl font-bold ">
-                    {logData.entries.length}
-                  </p>
+                  <p className="2 text-xs tracking-wide uppercase">Eventos</p>
+                  <p className="text-2xl font-bold">{logData.entries.length}</p>
                 </div>
                 <div className="rounded border border-background4 bg-background2 px-4 py-3">
-                  <p className="text-xs 2 uppercase tracking-wide">
+                  <p className="2 text-xs tracking-wide uppercase">
                     Procesos únicos
                   </p>
-                  <p className="text-2xl font-bold ">{logData.stats.length}</p>
+                  <p className="text-2xl font-bold">{logData.stats.length}</p>
                 </div>
                 <div className="rounded border border-background4 bg-background2 px-4 py-3">
-                  <p className="text-xs 2 uppercase tracking-wide">
+                  <p className="2 text-xs tracking-wide uppercase">
                     Sesiones registradas
                   </p>
-                  <p className="text-2xl font-bold ">
+                  <p className="text-2xl font-bold">
                     {logData.stats.reduce((acc, s) => acc + s.totalSessions, 0)}
                   </p>
                 </div>
@@ -221,5 +222,5 @@ export default function LogViewer() {
 
       {view === "global" && <GlobalTable />}
     </div>
-  );
+  )
 }
