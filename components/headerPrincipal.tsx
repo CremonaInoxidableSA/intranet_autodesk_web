@@ -1,0 +1,130 @@
+"use client"
+
+import { ThemeSwitcher } from "@/components/theme/themeSwitcher"
+
+import Link from "next/link"
+import Image from "next/image"
+import { useState } from "react"
+
+import { Menu, X } from "lucide-react"
+
+export default function HeaderPrincipal() {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  return (
+    <>
+      <header className="-header flex items-center bg-headerbg p-5">
+        {/* Desktop: iconos izquierda */}
+        <div className="hidden h-full w-[30%] flex-row items-center justify-start gap-5 xl:flex">
+          <X />
+          <ThemeSwitcher />
+          <Link href="/">Inicio</Link>
+        </div>
+
+        {/* Mobile: hamburger izquierda */}
+        <div className="flex items-center xl:hidden">
+          <button
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Abrir menú"
+            className="flex cursor-pointer items-center justify-center"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
+
+        {/* Título centrado */}
+        <p className="header flex flex-1 justify-center font-bold xl:w-[40%]">
+          Intranet General de Trabajo Cremona Inoxidable S.A.
+        </p>
+
+        {/* Desktop: links + logo */}
+        <div className="hidden w-[30%] flex-row justify-end xl:flex">
+          <ul className="flex h-full w-full flex-row items-center justify-end gap-7.5">
+            <Link
+              href="https://creminox.com"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Image
+                src="/logo/creminox_innovate.webp"
+                alt="Creminox logo"
+                width={120}
+                height={24}
+                className="h-6 w-auto"
+                priority
+                loading="eager"
+              />
+            </Link>
+          </ul>
+        </div>
+
+        {/* Mobile: logo derecha */}
+        <div className="flex items-center xl:hidden">
+          <Link
+            href="https://creminox.com"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <Image
+              src="/logo/creminox_innovate.webp"
+              alt="Creminox logo"
+              width={120}
+              height={24}
+              className="h-6 w-auto"
+              priority
+              loading="eager"
+            />
+          </Link>
+        </div>
+      </header>
+
+      {/* Overlay */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 xl:hidden"
+          onClick={() => setDrawerOpen(false)}
+        />
+      )}
+
+      {/* Drawer lateral izquierdo */}
+      <div
+        className={`-header fixed top-0 left-0 z-50 flex h-full w-64 flex-col bg-headerbg transition-transform duration-300 ease-in-out xl:hidden ${
+          drawerOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Fila superior: perfil + theme + cerrar */}
+        <div className="flex items-center justify-between border-b border-current/20 px-4 py-4">
+          <div className="flex items-center gap-4">
+            <X />
+            <ThemeSwitcher />
+          </div>
+          <button
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Cerrar menú"
+            className="flex cursor-pointer items-center justify-center"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* Links de navegación */}
+        <nav className="flex flex-col gap-5 px-4 py-5">
+          <Link
+            href="/"
+            className="text-base opacity-70 transition-opacity hover:opacity-100"
+            onClick={() => setDrawerOpen(false)}
+          >
+            Home
+          </Link>
+          <Link
+            href="http://192.168.20.198:3001"
+            className="text-base opacity-70 transition-opacity hover:opacity-100"
+            onClick={() => setDrawerOpen(false)}
+          >
+            Control AutoDesk
+          </Link>
+        </nav>
+      </div>
+    </>
+  )
+}
