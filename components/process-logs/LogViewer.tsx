@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { LogDataResponse } from "@/lib/logParser"
 import { StatsTable } from "./tablaEstadistica"
-import { EntriesTable } from "./EntriesTable"
+import { EntriesTable } from "./tablaPrincipal"
 import { VistaGraficos } from "./graficos"
 import { GlobalTable } from "./tablaGlobal"
 import {
