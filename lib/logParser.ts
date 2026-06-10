@@ -55,6 +55,10 @@ export interface ProcessStatsDTO {
   avgPerDaySeconds: number
   avgPerWeekSeconds: number
   avgPerMonthSeconds: number
+  daysWithUsage: number
+  businessDaysInPeriod: number
+  avgPerActiveDaySeconds: number
+  avgPerBusinessDaySeconds: number
 }
 
 export interface LogDataResponse {
@@ -73,6 +77,29 @@ function isoWeek(date: Date): string {
     ((d.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7
   )
   return `${d.getUTCFullYear()}-W${String(week).padStart(2, "0")}`
+}
+
+function countBusinessDays(start: Date, end: Date): number {
+  if (end < start) return 0
+  let count = 0
+  const cursor = new Date(start)
+  cursor.setHours(12, 0, 0, 0)
+  const finish = new Date(end)
+  finish.setHours(12, 0, 0, 0)
+
+  while (cursor <= finish) {
+    const day = cursor.getDay()
+    if (day !== 0 && day !== 6) count += 1
+    cursor.setDate(cursor.getDate() + 1)
+  }
+
+  return count
+}
+
+function countBusinessDaysInMonth(year: number, month: number): number {
+  const firstDay = new Date(year, month, 1)
+  const lastDay = new Date(year, month + 1, 0)
+  return countBusinessDays(firstDay, lastDay)
 }
 
 const BRACKETED_LINE =
@@ -453,6 +480,7 @@ export function parseLogFile(pcName: string): LogDataResponse {
   type Session = {
     processName: string
     startTime: Date
+    endTime: Date
     durationSeconds: number
   }
   const sessions: Session[] = []
@@ -486,6 +514,7 @@ export function parseLogFile(pcName: string): LogDataResponse {
           sessions.push({
             processName: proc.name,
             startTime: proc.startTime,
+            endTime: new Date(entry.timestamp),
             durationSeconds,
           })
           open.delete(entry.pid)
@@ -500,6 +529,7 @@ export function parseLogFile(pcName: string): LogDataResponse {
           sessions.push({
             processName: proc.name,
             startTime: proc.startTime,
+            endTime: new Date(entry.timestamp),
             durationSeconds,
           })
         }
@@ -527,11 +557,19 @@ export function parseLogFile(pcName: string): LogDataResponse {
     for (const s of list) {
       const d = s.startTime
       days.add(d.toISOString().slice(0, 10))
+      days.add(s.endTime.toISOString().slice(0, 10))
       weeks.add(isoWeek(d))
       months.add(
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
       )
     }
+
+    const businessDaysInPeriod = Array.from(months)
+      .map((monthStr) => {
+        const [year, month] = monthStr.split("-").map(Number)
+        return countBusinessDaysInMonth(year, month - 1)
+      })
+      .reduce((a, b) => a + b, 0)
 
     stats.push({
       processName,
@@ -540,6 +578,11 @@ export function parseLogFile(pcName: string): LogDataResponse {
       avgPerDaySeconds: days.size > 0 ? totalDuration / days.size : 0,
       avgPerWeekSeconds: weeks.size > 0 ? totalDuration / weeks.size : 0,
       avgPerMonthSeconds: months.size > 0 ? totalDuration / months.size : 0,
+      daysWithUsage: days.size,
+      businessDaysInPeriod,
+      avgPerActiveDaySeconds: days.size > 0 ? totalDuration / days.size : 0,
+      avgPerBusinessDaySeconds:
+        businessDaysInPeriod > 0 ? totalDuration / businessDaysInPeriod : 0,
     })
   }
 

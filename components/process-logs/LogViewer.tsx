@@ -61,7 +61,7 @@ export default function LogViewer() {
   }, [selectedPC])
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-6">
+    <div className="mx-auto flex w-full flex-col gap-6 p-6">
       <div className="flex flex-wrap items-center gap-4">
         <h1 className="text-xl font-bold">Monitor de Procesos</h1>
         <div className="flex gap-1">
@@ -132,10 +132,15 @@ export default function LogViewer() {
                     Equipo: selectedPC,
                     Proceso: s.processName,
                     Sesiones: s.totalSessions,
-                    Total: formatDuration(s.totalDurationSeconds),
-                    "Avg/Día": formatDuration(s.avgPerDaySeconds),
-                    "Avg/Semana": formatDuration(s.avgPerWeekSeconds),
-                    "Avg/Mes": formatDuration(s.avgPerMonthSeconds),
+                    "Total Horas": formatDuration(s.totalDurationSeconds),
+                    "Días con Uso": s.daysWithUsage,
+                    "Prom. Día con Uso": formatDuration(
+                      s.avgPerActiveDaySeconds
+                    ),
+                    "Días hábiles": s.businessDaysInPeriod,
+                    "Prom. diario real": formatDuration(
+                      s.avgPerBusinessDaySeconds
+                    ),
                   }))
                   const entriesRows = logData.entries.map((e) => ({
                     Equipo: selectedPC,
@@ -209,7 +214,7 @@ export default function LogViewer() {
                 </div>
               </div>
 
-              <StatsTable stats={logData.stats} />
+              <StatsTable stats={logData.stats} pcName={selectedPC} />
               <EntriesTable entries={logData.entries} />
             </>
           )}
