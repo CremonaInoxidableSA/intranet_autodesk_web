@@ -155,7 +155,7 @@ export const VistaGraficos = forwardRef<
   return (
     <div className="flex flex-col gap-6">
       {/* Torta: participacion total por programa */}
-      <div className="rounded border border-background4 bg-background2 p-6">
+      <div className="rounded border border-background4 bg-background2 p-5">
         <h2 className="mb-4 text-base font-semibold">
           Uso por programa - total acumulado
         </h2>
@@ -181,7 +181,7 @@ export const VistaGraficos = forwardRef<
       </div>
 
       {/* Barras: horas de uso apiladas por dia */}
-      <div className="rounded border border-background4 bg-background2 p-6">
+      <div className="rounded border border-background4 bg-background2 p-5">
         <h2 className="mb-5 text-base font-semibold">Horas de uso diarias</h2>
         <GraficoBarrasDuracion
           ref={refGraficoBarras}
@@ -192,7 +192,7 @@ export const VistaGraficos = forwardRef<
       </div>
 
       {/* Barras flotantes: en que horario del dia se usaron los programas */}
-      <div className="rounded border border-background4 bg-background2 p-6">
+      <div className="rounded border border-background4 bg-background2 p-5">
         <h2 className="mb-5 text-base font-semibold">Horario de uso diario</h2>
         <GraficoHorario
           ref={refGraficoHorario}
