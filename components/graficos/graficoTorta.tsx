@@ -48,9 +48,17 @@ export const GraficoTortaUso = forwardRef<ChartJS<"pie">, Propiedades>(
       }
     }, [estadisticas])
 
-    const tieneDatos = datosTorta.datasets[0].data.some((v) => v > 0)
+    const categoriasConDatos = datosTorta.labels.length
+    const cantidadActiva = (chart: any) => {
+      return chart
+        .getDatasetMeta(0)
+        .data.filter(
+          (_: any, index: number) =>
+            !chart.getDatasetMeta(0).hidden?.includes?.(index)
+        ).length
+    }
 
-    if (!tieneDatos) {
+    if (categoriasConDatos === 0) {
       return (
         <p className="py-8 text-center text-muted-foreground">
           No se encontraron datos de Inventor o AutoCAD.
@@ -69,7 +77,36 @@ export const GraficoTortaUso = forwardRef<ChartJS<"pie">, Propiedades>(
               plugins: {
                 legend: {
                   position: "bottom",
-                  labels: { color: "#a0a0a0", padding: 16 },
+                  onClick: (_event: any, legendItem: any, legend: any) => {
+                    if (categoriasConDatos <= 2) {
+                      return false
+                    }
+
+                    const chart = legend.chart
+                    const datasetMeta = chart.getDatasetMeta(0)
+                    const hidden = datasetMeta.hidden || {}
+                    const index = legendItem.index ?? 0
+                    const isHidden = hidden[index] === true
+
+                    if (isHidden) {
+                      hidden[index] = false
+                    } else {
+                      const datosActivos = datasetMeta.data.filter(
+                        (_: any, i: number) => hidden[i] !== true
+                      ).length
+                      if (datosActivos <= 2) {
+                        return false
+                      }
+                      hidden[index] = true
+                    }
+
+                    chart.update()
+                    return false
+                  },
+                  labels: {
+                    color: "#a0a0a0",
+                    padding: 16,
+                  },
                 },
                 tooltip: {
                   callbacks: {
