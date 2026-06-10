@@ -27,7 +27,14 @@ const PAGE_SIZE = 100
 export function EntriesTable({ entries }: { entries: LogEntryDTO[] }) {
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState<
-    "ALL" | "START" | "STOP" | "AUTO_STOP" | "FORCED_STOP" | "VM_IDLE"
+    | "ALL"
+    | "START"
+    | "STOP"
+    | "AUTO_STOP"
+    | "FORCED_STOP"
+    | "VM_IDLE"
+    | "VM_ON"
+    | "VM_OFF"
   >("ALL")
   const [page, setPage] = useState(1)
 
@@ -84,6 +91,8 @@ export function EntriesTable({ entries }: { entries: LogEntryDTO[] }) {
               <SelectItem value="STOP">STOP</SelectItem>
               <SelectItem value="AUTO_STOP">AUTO CIERRE</SelectItem>
               <SelectItem value="FORCED_STOP">VM APAGADA</SelectItem>
+              <SelectItem value="VM_ON">VM ON</SelectItem>
+              <SelectItem value="VM_OFF">VM OFF</SelectItem>
               <SelectItem value="VM_IDLE">VM SIN USO</SelectItem>
             </SelectContent>
           </Select>

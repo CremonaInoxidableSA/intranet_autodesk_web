@@ -28,6 +28,16 @@ const BADGE_CONFIG: Record<LogEntryType, { label: string; className: string }> =
       className:
         "bg-yellowcremona/20 text-yellowcremona border-yellowcremona/30 hover:bg-yellowcremona/30 rounded",
     },
+    VM_ON: {
+      label: "VM ON",
+      className:
+        "bg-greencremona/10 text-greencremona border-greencremona/20 hover:bg-greencremona/20 rounded",
+    },
+    VM_OFF: {
+      label: "VM OFF",
+      className:
+        "bg-redcremona/10 text-redcremona border-redcremona/20 hover:bg-redcremona/20 rounded",
+    },
     SISTEMA: {
       label: "SISTEMA",
       className:

@@ -15,6 +15,10 @@ export function getEntryDetail(entry: LogEntryDTO): string {
       return `${proc} — cierre automático (sin registro de cierre antes de las 17hs)`
     case "FORCED_STOP":
       return `VM apagada mientras ${proc} estaba activo`
+    case "VM_ON":
+      return "VM encendida"
+    case "VM_OFF":
+      return "VM apagada"
     case "VM_IDLE": {
       // message contains "VM activa sin uso de Autodesk (hasta HH:MM:SS)"
       const until = entry.message?.match(/hasta (.+)\)/)?.[1]

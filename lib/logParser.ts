@@ -10,6 +10,8 @@ export type LogEntryType =
   | "AUTO_STOP"
   | "FORCED_STOP"
   | "VM_IDLE"
+  | "VM_ON"
+  | "VM_OFF"
   | "MONITOR_START"
   | "SISTEMA"
 
@@ -202,46 +204,107 @@ function injectVMForcedStops(entries: LogEntryDTO[]): LogEntryDTO[] {
  * - VM_IDLE entries: when a VM was running but no Autodesk programs were opened
  */
 function buildDisplayEntries(entries: LogEntryDTO[]): LogEntryDTO[] {
-  const display: LogEntryDTO[] = []
-  let vmRunning = false
-  let vmRunningTimestamp: string | null = null
-  let vmHadPrograms = false
+  // First pass: identify which VM sessions had Autodesk programs so we can
+  // decide whether to emit VM_ON / VM_OFF or VM_IDLE for each session.
+  type VMSession = {
+    startEntry: LogEntryDTO
+    stopTimestamp: string | null
+    hadPrograms: boolean
+  }
+  const vmSessions: VMSession[] = []
+  let currentVMSession: VMSession | null = null
 
   for (const entry of entries) {
     if (entry.type === "MONITOR_START") {
-      // Reset VM tracking when the monitoring agent restarts
-      vmRunning = false
-      vmRunningTimestamp = null
-      vmHadPrograms = false
+      currentVMSession = null
       continue
     }
-
-    // Track VM lifecycle (HOST reporting VM state as SISTEMA entries)
     if (
       entry.type === "SISTEMA" &&
       entry.source === "HOST" &&
       entry.processName === "VM"
     ) {
-      if (entry.status === "RUNNING" && !vmRunning) {
-        vmRunning = true
-        vmRunningTimestamp = entry.timestamp
-        vmHadPrograms = false
+      if (entry.status === "RUNNING" && !currentVMSession) {
+        currentVMSession = {
+          startEntry: entry,
+          stopTimestamp: null,
+          hadPrograms: false,
+        }
+        vmSessions.push(currentVMSession)
       } else if (
         (entry.status === "OFF" || entry.status === "STOPPING") &&
-        vmRunning
+        currentVMSession
       ) {
-        if (!vmHadPrograms && vmRunningTimestamp) {
+        currentVMSession.stopTimestamp = entry.timestamp
+        currentVMSession = null
+      }
+      continue
+    }
+    if (
+      currentVMSession &&
+      entry.source === "VM" &&
+      entry.type === "START" &&
+      entry.processName &&
+      isAutodeskProgram(entry.processName)
+    ) {
+      currentVMSession.hadPrograms = true
+    }
+  }
+
+  // Build a lookup: sessions that had programs, keyed by their start timestamp
+  const vmOnWithPrograms = new Set<string>(
+    vmSessions.filter((s) => s.hadPrograms).map((s) => s.startEntry.timestamp)
+  )
+  // For VM_OFF: sessions keyed by stop timestamp
+  const vmOffWithPrograms = new Map<string, LogEntryDTO>(
+    vmSessions
+      .filter((s) => s.hadPrograms && s.stopTimestamp)
+      .map((s) => [s.stopTimestamp!, s.startEntry])
+  )
+  // For VM_IDLE: sessions with no programs
+  const vmIdleSessions = new Map<string, { stop: string }>(
+    vmSessions
+      .filter((s) => !s.hadPrograms && s.stopTimestamp)
+      .map((s) => [s.startEntry.timestamp, { stop: s.stopTimestamp! }])
+  )
+
+  // Second pass: emit the filtered display entries
+  const display: LogEntryDTO[] = []
+
+  for (const entry of entries) {
+    if (entry.type === "MONITOR_START") continue
+
+    if (
+      entry.type === "SISTEMA" &&
+      entry.source === "HOST" &&
+      entry.processName === "VM"
+    ) {
+      if (entry.status === "RUNNING") {
+        if (vmOnWithPrograms.has(entry.timestamp)) {
           display.push({
-            timestamp: vmRunningTimestamp,
+            ...entry,
+            type: "VM_ON",
+            message: "VM encendida",
+          })
+        } else if (vmIdleSessions.has(entry.timestamp)) {
+          const idleStop = vmIdleSessions.get(entry.timestamp)!
+          display.push({
+            timestamp: entry.timestamp,
             type: "VM_IDLE",
             source: "HOST",
             processName: "VM",
             status: "SIN USO",
-            message: `VM activa sin uso de Autodesk (hasta ${entry.timestamp})`,
+            message: `VM activa sin uso de Autodesk (hasta ${idleStop.stop})`,
           })
         }
-        vmRunning = false
-        vmRunningTimestamp = null
+      } else if (entry.status === "OFF" || entry.status === "STOPPING") {
+        if (vmOffWithPrograms.has(entry.timestamp)) {
+          display.push({
+            ...entry,
+            type: "VM_OFF",
+            message: "VM apagada",
+          })
+        }
       }
       continue
     }
@@ -254,7 +317,6 @@ function buildDisplayEntries(entries: LogEntryDTO[]): LogEntryDTO[] {
         entry.type === "AUTO_STOP" ||
         entry.type === "FORCED_STOP"
       ) {
-        if (entry.type === "START") vmHadPrograms = true
         display.push(entry)
       }
     }
