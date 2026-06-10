@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { forwardRef, useMemo, type Ref } from "react"
 import { Chart as ChartJS } from "chart.js"
@@ -13,7 +13,7 @@ import {
   formatearHora,
   COLOR_INVENTOR,
   COLOR_AUTOCAD,
-} from "./chart-utils"
+} from "../general/chart-utils"
 
 interface Propiedades {
   sesiones: Sesion[]

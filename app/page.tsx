@@ -1,4 +1,4 @@
-import LogViewer from "@/components/process-logs/logViewer";
+import LogViewer from "@/components/general/logViewer";
 
 export const metadata = {
   title: "Monitor de Procesos",

@@ -1,10 +1,10 @@
-﻿"use client"
+"use client"
 
 import { forwardRef, useMemo, type Ref } from "react"
 import type { ProcessStatsDTO } from "@/lib/logParser"
 import { Chart as ChartJS } from "chart.js"
 import { Pie } from "react-chartjs-2"
-import { esInventor, esAutocad } from "./chart-utils"
+import { esInventor, esAutocad } from "../general/chart-utils"
 
 interface Propiedades {
   estadisticas: ProcessStatsDTO[]

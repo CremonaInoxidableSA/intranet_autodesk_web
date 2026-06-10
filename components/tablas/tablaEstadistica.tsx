@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import type { ProcessStatsDTO } from "@/lib/logParser"
-import { formatDuration } from "./utils"
+import { formatDuration } from "../general/utils"
 import { Input } from "@/components/ui/input"
 import {
   Table,

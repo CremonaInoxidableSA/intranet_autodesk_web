@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import {
   forwardRef,
@@ -23,7 +23,7 @@ import {
   extraerSesiones,
   obtenerRangoSemanaActual,
   graficoAImagenPNG,
-} from "./chart-utils"
+} from "../general/chart-utils"
 import { GraficoTortaUso } from "./graficoTorta"
 import { GraficoBarrasDuracion } from "./graficoHorario"
 import { GraficoHorario } from "./graficoUsoDiario"
@@ -83,7 +83,12 @@ export const VistaGraficos = forwardRef<
       .join("   .   ")
     doc.text(subtitulo, margen, 25)
 
-    function agregarTituloSeccion(texto: string, x: number, y: number, w: number) {
+    function agregarTituloSeccion(
+      texto: string,
+      x: number,
+      y: number,
+      w: number
+    ) {
       doc.setFontSize(14)
       doc.setTextColor(30, 30, 30)
       doc.text(texto, x, y)
@@ -112,13 +117,25 @@ export const VistaGraficos = forwardRef<
     // Pagina 1: grafico de torta (vertical)
     let y = 34
     if (refGraficoTorta.current && hayDatosTorta) {
-      agregarTituloSeccion("Uso por programa - total acumulado", margen, y, anchoContenido)
+      agregarTituloSeccion(
+        "Uso por programa - total acumulado",
+        margen,
+        y,
+        anchoContenido
+      )
       y += 10
       const datosImagen = graficoAImagenPNG(refGraficoTorta.current)
       const { width, height } = refGraficoTorta.current.canvas
       const anchoImg = anchoContenido * 0.6
       const altoImg = (anchoImg * height) / width
-      doc.addImage(datosImagen, "PNG", margen + (anchoContenido - anchoImg) / 2, y, anchoImg, altoImg)
+      doc.addImage(
+        datosImagen,
+        "PNG",
+        margen + (anchoContenido - anchoImg) / 2,
+        y,
+        anchoImg,
+        altoImg
+      )
     }
 
     // Pagina 2: grafico de barras apiladas de duracion (horizontal)

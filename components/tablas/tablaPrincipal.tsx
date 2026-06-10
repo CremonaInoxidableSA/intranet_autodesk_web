@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react"
 import type { LogEntryDTO } from "@/lib/logParser"
-import { Badge } from "./Badge"
-import { getEntryDetail } from "./utils"
+import { Badge } from "../general/Badge"
+import { getEntryDetail } from "../general/utils"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {

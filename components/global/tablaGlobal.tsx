@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import type { LogDataResponse } from "@/lib/logParser"
-import { formatDuration, exportToExcelMultiSheet } from "./utils"
+import { formatDuration, exportToExcelMultiSheet } from "../general/utils"
 import { Button } from "@/components/ui/button"
 import {
   Table,

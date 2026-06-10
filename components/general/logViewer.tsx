@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import type { LogDataResponse } from "@/lib/logParser"
-import { StatsTable } from "./tablaEstadistica"
-import { EntriesTable } from "./tablaPrincipal"
-import { VistaGraficos } from "./graficos"
-import { GlobalTable } from "./tablaGlobal"
+import { StatsTable } from "../tablas/tablaEstadistica"
+import { EntriesTable } from "../tablas/tablaPrincipal"
+import { VistaGraficos } from "../graficos/ChartsView"
+import { GlobalTable } from "../global/tablaGlobal"
 import {
   exportToExcelMultiSheet,
   formatDuration,
