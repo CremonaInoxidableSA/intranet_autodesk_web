@@ -1,7 +1,5 @@
 ﻿import type { LogEntryDTO } from "@/lib/logParser"
 
-// â”€â”€â”€ Tipos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 export interface Sesion {
   nombrePrograma: string
   fecha: string
@@ -14,8 +12,6 @@ export interface GruposSesionesPorDia {
   maxRanuras: number
 }
 
-// â”€â”€â”€ Colores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 export const COLOR_INVENTOR = {
   fondo: "rgba(239,130,37,0.80)",
   borde: "#ef8225",
@@ -25,8 +21,6 @@ export const COLOR_AUTOCAD = {
   fondo: "rgba(48,160,240,0.80)",
   borde: "#30a0f0",
 } as const
-
-// â”€â”€â”€ Identificadores de programa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const esInventor = (nombre: string): boolean =>
   nombre.toLowerCase().includes("inventor")
@@ -150,8 +144,6 @@ export function agruparSesionesDePrograma(
   const maxRanuras = Math.max(0, ...dias.map((d) => porDia.get(d)?.length ?? 0))
   return { porDia, maxRanuras }
 }
-
-// â”€â”€â”€ Rango de semana actual â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function obtenerRangoSemanaActual(): { desde: string; hasta: string } {
   const ahora = new Date()

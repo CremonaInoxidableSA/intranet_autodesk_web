@@ -44,9 +44,6 @@ export const GraficoHorario = forwardRef<ChartJS<"bar">, Propiedades>(
         esAutocad
       )
 
-      // Cada dia genera dos entradas en el eje X: una para Inventor y otra para AutoCAD.
-      // Con grouped:false los datasets del mismo programa se superponen en la misma
-      // columna en lugar de aparecer uno al lado del otro por cada sesion.
       const diasPares: string[] = []
       for (const dia of dias) {
         diasPares.push(`${dia}|inv`, `${dia}|cad`)

@@ -20,7 +20,6 @@ export function getEntryDetail(entry: LogEntryDTO): string {
     case "VM_OFF":
       return "VM apagada"
     case "VM_IDLE": {
-      // message contains "VM activa sin uso de Autodesk (hasta HH:MM:SS)"
       const until = entry.message?.match(/hasta (.+)\)/)?.[1]
       return until
         ? `VM encendida sin usar Autodesk (hasta ${until})`

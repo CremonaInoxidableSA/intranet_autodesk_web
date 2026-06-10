@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import Image from "next/image";
+import Image from "next/image"
 
-import logoDataURL from "./cremonabase64";
+import logoDataURL from "./cremonabase64"
 
 interface LogoProps {
-  width?: number;
-  height?: number;
-  alt?: string;
-  className?: string;
+  width?: number
+  height?: number
+  alt?: string
+  className?: string
 }
 
 const LogoBase64 = ({
@@ -27,7 +27,7 @@ const LogoBase64 = ({
         style={{ objectFit: "contain" }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default LogoBase64;
+export default LogoBase64

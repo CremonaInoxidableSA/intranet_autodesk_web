@@ -28,7 +28,6 @@ import { GraficoTortaUso } from "./graficoTorta"
 import { GraficoBarrasDuracion } from "./graficoHorario"
 import { GraficoHorario } from "./graficoUsoDiario"
 
-// Registrar los componentes de Chart.js una sola vez a nivel de modulo
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -47,12 +46,10 @@ export const VistaGraficos = forwardRef<
   const [fechaDesde, setFechaDesde] = useState(rangoInicial.desde)
   const [fechaHasta, setFechaHasta] = useState(rangoInicial.hasta)
 
-  // Los refs dan acceso al canvas de cada grafico para el exportador de PDF
   const refGraficoTorta = useRef<ChartJS<"pie"> | null>(null)
   const refGraficoBarras = useRef<ChartJS<"bar"> | null>(null)
   const refGraficoHorario = useRef<ChartJS<"bar"> | null>(null)
 
-  // Extraer sesiones una sola vez y compartirlas con ambos graficos de barras
   const todasLasSesiones = useMemo(
     () => extraerSesiones(datosLog.entries),
     [datosLog.entries]
@@ -60,7 +57,6 @@ export const VistaGraficos = forwardRef<
 
   const hayDatosTorta = datosLog.stats.some((s) => s.totalDurationSeconds > 0)
 
-  // Exportar a PDF
   async function exportarPDF() {
     const { default: jsPDF } = await import("jspdf")
 
@@ -69,7 +65,6 @@ export const VistaGraficos = forwardRef<
     const margen = 14
     const anchoContenido = anchoPagina - margen * 2
 
-    // Encabezado de portada
     doc.setFontSize(15)
     doc.setTextColor(40, 40, 40)
     doc.text("Reporte de Uso de Programas", margen, 18)
@@ -114,7 +109,6 @@ export const VistaGraficos = forwardRef<
       doc.addImage(datosImagen, "PNG", margen, yH, anchoImg, altoImg)
     }
 
-    // Pagina 1: grafico de torta (vertical)
     let y = 34
     if (refGraficoTorta.current && hayDatosTorta) {
       agregarTituloSeccion(
@@ -138,7 +132,6 @@ export const VistaGraficos = forwardRef<
       )
     }
 
-    // Pagina 2: grafico de barras apiladas de duracion (horizontal)
     if (refGraficoBarras.current) {
       agregarPaginaHorizontal(
         refGraficoBarras.current,
@@ -146,7 +139,6 @@ export const VistaGraficos = forwardRef<
       )
     }
 
-    // Pagina 3: grafico de horario flotante (horizontal)
     if (refGraficoHorario.current) {
       agregarPaginaHorizontal(
         refGraficoHorario.current,

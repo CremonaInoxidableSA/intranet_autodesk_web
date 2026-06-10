@@ -22,7 +22,7 @@
   --color-cyancremona: var(--color-cyancremona);
   --color-purplecremona: var(--color-purplecremona);
   --color-pinkcremona: var(--color-pinkcremona);
-  
+
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -75,17 +75,17 @@
   --background5: #d8d8d8;
   --background6: #d0d0d0;
 
-  --color-redcremona: #ED292E;
-  --color-bluecremona: #223F7F;
+  --color-redcremona: #ed292e;
+  --color-bluecremona: #223f7f;
 
-  --color-orangecremona: #D97706;
-  --color-yellowcremona: #B88A00;
-  --color-greencremona: #2F7A3E;
-  --color-tealcremona: #0F766E;
-  --color-cyancremona: #0E7490;
-  --color-purplecremona: #6D47B1;
-  --color-pinkcremona: #BE3D74;
-  
+  --color-orangecremona: #d97706;
+  --color-yellowcremona: #b88a00;
+  --color-greencremona: #2f7a3e;
+  --color-tealcremona: #0f766e;
+  --color-cyancremona: #0e7490;
+  --color-purplecremona: #6d47b1;
+  --color-pinkcremona: #be3d74;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -130,16 +130,16 @@
   --background5: #393939;
   --background6: #3e3e3e;
 
-  --color-redcremona: #FF4A4F;
-  --color-bluecremona: #4A76D1;
+  --color-redcremona: #ff4a4f;
+  --color-bluecremona: #4a76d1;
 
-  --color-orangecremona: #F59E0B;
-  --color-yellowcremona: #EAB308;
-  --color-greencremona: #4ADE80;
-  --color-tealcremona: #2DD4BF;
-  --color-cyancremona: #22D3EE;
-  --color-purplecremona: #A78BFA;
-  --color-pinkcremona: #F472B6;
+  --color-orangecremona: #f59e0b;
+  --color-yellowcremona: #eab308;
+  --color-greencremona: #4ade80;
+  --color-tealcremona: #2dd4bf;
+  --color-cyancremona: #22d3ee;
+  --color-purplecremona: #a78bfa;
+  --color-pinkcremona: #f472b6;
 
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

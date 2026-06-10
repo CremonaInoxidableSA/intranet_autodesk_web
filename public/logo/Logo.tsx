@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import Image from "next/image";
+import Image from "next/image"
 
 export default function Logo({ className }: { className?: string }) {
   return (
@@ -13,5 +13,5 @@ export default function Logo({ className }: { className?: string }) {
         style={{ objectFit: "contain" }}
       />
     </div>
-  );
+  )
 }

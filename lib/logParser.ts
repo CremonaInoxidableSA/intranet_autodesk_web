@@ -168,16 +168,11 @@ function injectAutoStops(entries: LogEntryDTO[], now: Date): LogEntryDTO[] {
   )
 }
 
-/**
- * When the HOST reports the VM as OFF while Autodesk programs were still running
- * (from the VM's perspective), inject a FORCED_STOP entry so the session is properly closed.
- */
 function injectVMForcedStops(entries: LogEntryDTO[]): LogEntryDTO[] {
   const openVMProgs = new Set<string>()
   const injected: LogEntryDTO[] = []
 
   for (const entry of entries) {
-    // VM guest monitor restarted → programs were shut down with the VM
     if (entry.type === "MONITOR_START" && entry.source === "VM") {
       openVMProgs.clear()
     }
@@ -225,14 +220,7 @@ function injectVMForcedStops(entries: LogEntryDTO[]): LogEntryDTO[] {
   )
 }
 
-/**
- * Filters the full entry list down to only what matters for display:
- * - Autodesk program START / STOP / AUTO_STOP / FORCED_STOP events
- * - VM_IDLE entries: when a VM was running but no Autodesk programs were opened
- */
 function buildDisplayEntries(entries: LogEntryDTO[]): LogEntryDTO[] {
-  // First pass: identify which VM sessions had Autodesk programs so we can
-  // decide whether to emit VM_ON / VM_OFF or VM_IDLE for each session.
   type VMSession = {
     startEntry: LogEntryDTO
     stopTimestamp: string | null
@@ -278,24 +266,20 @@ function buildDisplayEntries(entries: LogEntryDTO[]): LogEntryDTO[] {
     }
   }
 
-  // Build a lookup: sessions that had programs, keyed by their start timestamp
   const vmOnWithPrograms = new Set<string>(
     vmSessions.filter((s) => s.hadPrograms).map((s) => s.startEntry.timestamp)
   )
-  // For VM_OFF: sessions keyed by stop timestamp
   const vmOffWithPrograms = new Map<string, LogEntryDTO>(
     vmSessions
       .filter((s) => s.hadPrograms && s.stopTimestamp)
       .map((s) => [s.stopTimestamp!, s.startEntry])
   )
-  // For VM_IDLE: sessions with no programs
   const vmIdleSessions = new Map<string, { stop: string }>(
     vmSessions
       .filter((s) => !s.hadPrograms && s.stopTimestamp)
       .map((s) => [s.startEntry.timestamp, { stop: s.stopTimestamp! }])
   )
 
-  // Second pass: emit the filtered display entries
   const display: LogEntryDTO[] = []
 
   for (const entry of entries) {
@@ -336,7 +320,6 @@ function buildDisplayEntries(entries: LogEntryDTO[]): LogEntryDTO[] {
       continue
     }
 
-    // Keep only Autodesk program lifecycle events
     if (entry.processName && isAutodeskProgram(entry.processName)) {
       if (
         entry.type === "START" ||
@@ -460,7 +443,6 @@ export function parseLogFile(pcName: string): LogDataResponse {
       (entry.type === "START" || entry.type === "STOP") &&
       entry.processName
     ) {
-      // Use source-aware key so HOST and VM events for the same process name don't collide
       const key = `${entry.source ?? ""}:${entry.processName}`
       const last = lastTypeByProcess.get(key)
       if (last === entry.type) {
@@ -546,7 +528,6 @@ export function parseLogFile(pcName: string): LogDataResponse {
 
   const stats: ProcessStatsDTO[] = []
   for (const [processName, list] of byProcess) {
-    // Only report stats for Autodesk programs
     if (!isAutodeskProgram(processName)) continue
     const totalDuration = list.reduce((acc, s) => acc + s.durationSeconds, 0)
 
@@ -588,6 +569,5 @@ export function parseLogFile(pcName: string): LogDataResponse {
 
   stats.sort((a, b) => b.totalDurationSeconds - a.totalDurationSeconds)
 
-  // Only expose the relevant events for display (Autodesk programs + VM_IDLE markers)
   return { entries: buildDisplayEntries(finalEntries), stats }
 }
