@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import type { LogDataResponse } from "@/lib/logParser"
-import { StatsTable } from "./StatsTable"
+import { StatsTable } from "./tablaEstadistica"
 import { EntriesTable } from "./EntriesTable"
-import { ChartsView } from "./ChartsView"
-import { GlobalTable } from "./GlobalTable"
+import { VistaGraficos } from "./graficos"
+import { GlobalTable } from "./tablaGlobal"
 import {
   exportToExcelMultiSheet,
   formatDuration,
@@ -27,7 +27,7 @@ export default function LogViewer() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [view, setView] = useState<"tablas" | "graficos" | "global">("tablas")
-  const chartsRef = useRef<{ exportToPDF: () => Promise<void> }>(null)
+  const chartsRef = useRef<{ exportarPDF: () => Promise<void> }>(null)
 
   useEffect(() => {
     fetch("/api/logs")
@@ -162,7 +162,7 @@ export default function LogViewer() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => chartsRef.current?.exportToPDF()}
+                onClick={() => chartsRef.current?.exportarPDF()}
                 title="Descargar PDF con ambos gráficos"
               >
                 ↓ PDF
@@ -215,7 +215,7 @@ export default function LogViewer() {
           )}
 
           {view === "graficos" && (
-            <ChartsView ref={chartsRef} logData={logData} pc={selectedPC} />
+            <VistaGraficos ref={chartsRef} datosLog={logData} pc={selectedPC} />
           )}
         </>
       )}
