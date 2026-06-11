@@ -19,7 +19,7 @@ export default function HeaderPrincipal() {
           <X />
           <ThemeSwitcher />
           <Link
-            href="http://192.168.20.198:3000"
+            href="http://192.168.20.150:3000"
             className="text-base opacity-70 transition-opacity hover:opacity-100"
             onClick={() => setDrawerOpen(false)}
           >
@@ -116,7 +116,7 @@ export default function HeaderPrincipal() {
         {/* Links de navegación */}
         <nav className="flex flex-col gap-5 px-4 py-5">
           <Link
-            href="http://192.168.20.198:3000"
+            href="http://192.168.20.150:3000"
             className="text-base opacity-70 transition-opacity hover:opacity-100"
             onClick={() => setDrawerOpen(false)}
           >
