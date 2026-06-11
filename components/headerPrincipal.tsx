@@ -1,10 +1,11 @@
 "use client"
 
 import { ThemeSwitcher } from "@/components/theme/themeSwitcher"
+// import UserIcon from "@/components/userIcon/userIcon"
 
 import Link from "next/link"
-import Image from "next/image"
 import { useState } from "react"
+import { LogoCreminox as Logo } from "@/components/Logos"
 
 import { Menu, X } from "lucide-react"
 
@@ -19,7 +20,7 @@ export default function HeaderPrincipal() {
           <X />
           <ThemeSwitcher />
           <Link
-            href="http://192.168.20.150:3000"
+            href="/"
             className="text-base opacity-70 transition-opacity hover:opacity-100"
             onClick={() => setDrawerOpen(false)}
           >
@@ -44,24 +45,15 @@ export default function HeaderPrincipal() {
         </p>
 
         {/* Desktop: links + logo */}
-        <div className="hidden w-[30%] flex-row justify-end xl:flex">
-          <ul className="flex h-full w-full flex-row items-center justify-end gap-7.5">
-            <Link
-              href="https://creminox.com"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <Image
-                src="/logo/creminox_innovate.webp"
-                alt="Creminox logo"
-                width={120}
-                height={24}
-                className="h-6 w-auto"
-                priority
-                loading="eager"
-              />
-            </Link>
-          </ul>
+        <div className="hidden w-[30%] justify-end xl:flex">
+          <Link
+            href="https://creminox.com"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="h-full"
+          >
+            <Logo extraClass="h-6" />
+          </Link>
         </div>
 
         {/* Mobile: logo derecha */}
@@ -71,15 +63,7 @@ export default function HeaderPrincipal() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            <Image
-              src="/logo/creminox_innovate.webp"
-              alt="Creminox logo"
-              width={120}
-              height={24}
-              className="h-6 w-auto"
-              priority
-              loading="eager"
-            />
+            <Logo extraClass="h-6" />
           </Link>
         </div>
       </header>

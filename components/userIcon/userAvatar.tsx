@@ -1,7 +1,6 @@
 "use client"
-
-import Image from "next/image"
 import { CircleUserRound } from "lucide-react"
+import { LogoCx as Logo } from "@/components/Logos"
 
 const AVATAR_COLORS = [
   "#2563eb",
@@ -62,13 +61,7 @@ export const UserAvatar = ({
   if (rol === "superadmin") {
     return (
       <div className={`${sizeClass} shrink-0 overflow-hidden rounded-full`}>
-        <Image
-          src="/logo/creminox_pfp.webp"
-          alt="Superadmin"
-          width={imgPx}
-          height={imgPx}
-          unoptimized
-          className="h-full w-full object-cover"
+        <Logo extraClass="h-full w-full object-cover"
         />
       </div>
     )
