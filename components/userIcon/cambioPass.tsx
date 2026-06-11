@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
 import {
   Dialog,
   DialogTrigger,
@@ -10,47 +10,47 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
+import { toast } from "sonner"
 
 const CambioPass = () => {
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ current_password: "", new_password: "" });
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({ current_password: "", new_password: "" })
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (
     key: "current_password" | "new_password",
-    value: string,
+    value: string
   ) => {
-    setForm((s) => ({ ...s, [key]: value }));
-  };
+    setForm((s) => ({ ...s, [key]: value }))
+  }
 
   const handleSubmit = async () => {
     if (!form.current_password || !form.new_password) {
       toast.error("Por favor, complete todos los campos.", {
         position: "top-center",
-      });
-      return;
+      })
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
 
     try {
       const token =
         (typeof window !== "undefined" &&
           (localStorage.getItem("access_token") ||
             localStorage.getItem("token"))) ||
-        undefined;
+        undefined
 
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
-      };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
+      }
+      if (token) headers["Authorization"] = `Bearer ${token}`
 
       const res = await fetch(`/api/proxy/auth/cambiar_password`, {
         method: "POST",
@@ -60,54 +60,54 @@ const CambioPass = () => {
           new_password: form.new_password,
         }),
         credentials: "include",
-      });
+      })
 
       let data: {
-        success?: boolean;
-        detail?: string;
-        error?: string;
-        message?: string;
-      } = {};
+        success?: boolean
+        detail?: string
+        error?: string
+        message?: string
+      } = {}
       try {
-        data = await res.json();
+        data = await res.json()
       } catch {
-        data = {};
+        data = {}
       }
 
       if (res.ok && (data.success ?? true)) {
         toast.success("Contraseña cambiada exitosamente.", {
           position: "top-center",
-        });
-        setOpen(false);
-        setForm({ current_password: "", new_password: "" });
+        })
+        setOpen(false)
+        setForm({ current_password: "", new_password: "" })
       } else {
         const message =
           data.detail ??
           data.error ??
           data.message ??
-          "Error al cambiar la contraseña.";
+          "Error al cambiar la contraseña."
         toast.error(message, {
           position: "top-center",
-        });
+        })
       }
     } catch {
       toast.error("Error de conexión.", {
         position: "top-center",
-      });
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-2 w-full border border-botonblueborder bg-botonblue hover:bg-botonbluehover  cursor-pointer">
+        <Button className="border-botonblueborder bg-botonblue hover:bg-botonbluehover mt-2 w-full cursor-pointer border">
           <p className="text-botonblueborder font-medium">Cambiar Contraseña</p>
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-150 bg-background3 z-800">
+      <DialogContent className="z-800 bg-background3 sm:max-w-150">
         <DialogHeader>
           <DialogTitle>Cambiar Contraseña</DialogTitle>
           <DialogDescription>
@@ -159,7 +159,7 @@ const CambioPass = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default CambioPass;
+export default CambioPass

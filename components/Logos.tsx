@@ -1,34 +1,37 @@
-"use client"
+import Image from "next/image"
 
 export function LogoCreminox({ extraClass }: { extraClass?: string }) {
   return (
-    <img
-      className={`aspect-auto w-auto ${extraClass || ""}`}
+    <Image
       alt="Creminox Logo"
       src="/creminox.png"
+      width={200}
+      height={48}
+      className={`w-auto ${extraClass || ""}`}
     />
   )
 }
 
 export function LogoCx({ extraClass }: { extraClass?: string }) {
   return (
-    <img
-      className={`aspect-auto w-auto ${extraClass || ""}`}
+    <Image
       alt="Cx"
       src="/logoMetalizado.png"
+      width={200}
+      height={48}
+      className={`w-auto ${extraClass || ""}`}
     />
   )
 }
 
 export function LogoCreminoxInnovate({ extraClass }: { extraClass?: string }) {
-  console.log("LogoCreminoxInnovate renderizando, extraClass:", extraClass)
   return (
-    <img
-      className={`aspect-auto w-auto ${extraClass || ""}`}
+    <Image
       alt="Creminox Logo"
       src="/creminox_innovate.png"
-      onError={(e) => console.log("ERROR imagen:", e)}
-      onLoad={() => console.log("OK imagen cargada")}
+      width={200}
+      height={48}
+      className={`w-auto ${extraClass || ""}`}
     />
   )
 }

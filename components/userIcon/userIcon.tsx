@@ -1,47 +1,47 @@
-"use client";
+"use client"
 
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ui/popover"
 
-import { Button } from "@/components/ui/button";
-import CambioPass from "@/components/userIcon/cambioPass";
-import { UserAvatar } from "@/components/userIcon/userAvatar";
+import { Button } from "@/components/ui/button"
+import CambioPass from "@/components/userIcon/cambioPass"
+import { UserAvatar } from "@/components/userIcon/userAvatar"
 
-import { useRouter } from "next/navigation";
-import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation"
+import { Spinner } from "@/components/ui/spinner"
 
-import { useAuth } from "@/context/AuthProvider";
-import { useState } from "react";
+import { useAuth } from "@/context/AuthProvider"
+import { useState } from "react"
 
 const UserIcon = () => {
-  const router = useRouter();
-  const { logout, nombre, apellido, rol, loading } = useAuth();
-  const [open, setOpen] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const router = useRouter()
+  const { logout, nombre, apellido, rol, loading } = useAuth()
+  const [open, setOpen] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   const displayName =
     `${nombre ?? ""}${nombre || apellido ? " " : ""}${apellido ?? ""}`.trim() ||
-    "Usuario";
+    "Usuario"
 
   const closeSession = async () => {
     try {
-      setLoggingOut(true);
-      await logout();
-      setOpen(false);
+      setLoggingOut(true)
+      await logout()
+      setOpen(false)
     } catch {
     } finally {
-      setLoggingOut(false);
+      setLoggingOut(false)
     }
-  };
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="cursor-pointer">
-        <div className="group relative flex items-center justify-center w-6.25 h-6.25 ease-in-out">
-          <div className="absolute inset-0 rounded-full bg-gray-400/0 group-hover:bg-gray-400/20 ease-in-out group-hover:scale-150" />
+        <div className="group relative flex h-6.25 w-6.25 items-center justify-center ease-in-out">
+          <div className="absolute inset-0 rounded-full bg-gray-400/0 ease-in-out group-hover:scale-150 group-hover:bg-gray-400/20" />
           <div className="transition-transform ease-in-out group-hover:scale-110">
             <UserAvatar
               nombre={nombre}
@@ -65,13 +65,13 @@ const UserIcon = () => {
 
             {rol === "admin" || rol === "superadmin" ? (
               <Button
-                className="mt-2 w-full border border-bluecremona bg-bluecremona/10 hover:bg-bluecremonahover  cursor-pointer"
+                className="hover:bg-bluecremonahover mt-2 w-full cursor-pointer border border-bluecremona bg-bluecremona/10"
                 onClick={() => {
-                  router.push("/config_user");
-                  setOpen(false);
+                  router.push("/config_user")
+                  setOpen(false)
                 }}
               >
-                <p className="text-bluecremona font-medium">
+                <p className="font-medium text-bluecremona">
                   Configurar usuarios
                 </p>
               </Button>
@@ -79,7 +79,7 @@ const UserIcon = () => {
               <CambioPass />
             )}
             <Button
-              className="mt-2 w-full bg-redcremona hover:bg-redcremona  cursor-pointer"
+              className="mt-2 w-full cursor-pointer bg-redcremona hover:bg-redcremona"
               onClick={closeSession}
               disabled={loggingOut}
             >
@@ -96,7 +96,7 @@ const UserIcon = () => {
         )}
       </PopoverContent>
     </Popover>
-  );
-};
+  )
+}
 
-export default UserIcon;
+export default UserIcon

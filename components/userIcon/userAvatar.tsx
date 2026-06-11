@@ -46,7 +46,6 @@ interface UserAvatarProps {
   loading?: boolean
   sizeClass?: string
   textClass?: string
-  imgPx?: number
 }
 
 export const UserAvatar = ({
@@ -56,13 +55,11 @@ export const UserAvatar = ({
   loading,
   sizeClass = "w-6.25 h-6.25",
   textClass = "text-[11px]",
-  imgPx = 25,
 }: UserAvatarProps) => {
   if (rol === "superadmin") {
     return (
       <div className={`${sizeClass} shrink-0 overflow-hidden rounded-full`}>
-        <Logo extraClass="h-full w-full object-cover"
-        />
+        <Logo extraClass="h-full w-full object-cover" />
       </div>
     )
   }
