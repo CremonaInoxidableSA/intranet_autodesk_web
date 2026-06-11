@@ -18,7 +18,13 @@ export default function HeaderPrincipal() {
         <div className="hidden h-full w-[30%] flex-row items-center justify-start gap-5 xl:flex">
           <X />
           <ThemeSwitcher />
-          <Link href="/">Inicio</Link>
+          <Link
+            href="http://192.168.20.198:3000"
+            className="text-base opacity-70 transition-opacity hover:opacity-100"
+            onClick={() => setDrawerOpen(false)}
+          >
+            Home
+          </Link>
         </div>
 
         {/* Mobile: hamburger izquierda */}
@@ -110,18 +116,11 @@ export default function HeaderPrincipal() {
         {/* Links de navegación */}
         <nav className="flex flex-col gap-5 px-4 py-5">
           <Link
-            href="/"
+            href="http://192.168.20.198:3000"
             className="text-base opacity-70 transition-opacity hover:opacity-100"
             onClick={() => setDrawerOpen(false)}
           >
             Home
-          </Link>
-          <Link
-            href="http://192.168.20.198:3001"
-            className="text-base opacity-70 transition-opacity hover:opacity-100"
-            onClick={() => setDrawerOpen(false)}
-          >
-            Control AutoDesk
           </Link>
         </nav>
       </div>

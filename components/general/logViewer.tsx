@@ -69,7 +69,7 @@ export default function LogViewer() {
             variant={view === "tablas" ? "default" : "outline"}
             className={
               view === "tablas"
-                ? "border-greencremona bg-greencremona/30 text-greencremona"
+                ? "border-greencremona bg-greencremona/30 text-greencremona hover:bg-greencremona/10"
                 : ""
             }
             size="sm"
@@ -81,7 +81,7 @@ export default function LogViewer() {
             variant={view === "graficos" ? "default" : "outline"}
             className={
               view === "graficos"
-                ? "border-greencremona bg-greencremona/30 text-greencremona"
+                ? "border-greencremona bg-greencremona/30 text-greencremona hover:bg-greencremona/10"
                 : ""
             }
             size="sm"
@@ -93,7 +93,7 @@ export default function LogViewer() {
             variant={view === "global" ? "default" : "outline"}
             className={
               view === "global"
-                ? "border-greencremona bg-greencremona/30 text-greencremona"
+                ? "border-greencremona bg-greencremona/30 text-greencremona hover:bg-greencremona/10"
                 : ""
             }
             size="sm"
