@@ -11,6 +11,7 @@ import { Menu, X } from "lucide-react"
 
 export default function HeaderPrincipal() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const urlHome = process.env.GLOBAL_CONFIG_HOME_URL || "/"
 
   return (
     <>
@@ -20,7 +21,7 @@ export default function HeaderPrincipal() {
           <X />
           <ThemeSwitcher />
           <Link
-            href="/"
+            href={urlHome}
             className="text-base opacity-70 transition-opacity hover:opacity-100"
             onClick={() => setDrawerOpen(false)}
           >
@@ -100,7 +101,7 @@ export default function HeaderPrincipal() {
         {/* Links de navegación */}
         <nav className="flex flex-col gap-5 px-4 py-5">
           <Link
-            href="http://192.168.20.150:3000"
+            href={urlHome}
             className="text-base opacity-70 transition-opacity hover:opacity-100"
             onClick={() => setDrawerOpen(false)}
           >
