@@ -5,13 +5,22 @@ import { ThemeSwitcher } from "@/components/theme/themeSwitcher"
 
 import Link from "next/link"
 import { useState } from "react"
-import { siteConfig } from "@/lib/config"
+import { urlConfig } from "@/lib/config"
 import { LogoCreminox as Logo } from "@/components/Logos"
 
 import { Menu, X } from "lucide-react"
 
 export default function HeaderPrincipal() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+
+  const HeaderDerecha = [
+    {
+      label: "Intranet",
+      href: urlConfig.intranetUrl,
+      className: "text-base opacity-70 transition-opacity hover:opacity-100",
+      onClick: () => setDrawerOpen(false),
+    },
+  ]
 
   return (
     <>
@@ -20,13 +29,6 @@ export default function HeaderPrincipal() {
         <div className="hidden h-full w-[30%] flex-row items-center justify-start gap-5 xl:flex">
           <X />
           <ThemeSwitcher />
-          <Link
-            href={siteConfig.homeUrl}
-            className="text-base opacity-70 transition-opacity hover:opacity-100"
-            onClick={() => setDrawerOpen(false)}
-          >
-            Home
-          </Link>
         </div>
 
         {/* Mobile: hamburger izquierda */}
@@ -42,13 +44,23 @@ export default function HeaderPrincipal() {
 
         {/* Título centrado */}
         <p className="header flex flex-1 justify-center font-bold xl:w-[40%]">
-          Intranet General de Trabajo Cremona Inoxidable S.A.
+          Registros AutoDesk Cremona Inoxidable S.A.
         </p>
 
         {/* Desktop: links + logo */}
-        <div className="hidden w-[30%] justify-end xl:flex">
+        <div className="hidden w-[30%] justify-end gap-5 xl:flex">
+          {HeaderDerecha.map((item, index) => (
+            <Link
+              key={index}
+              href={item.href}
+              className="text-base opacity-70 transition-opacity hover:opacity-100"
+              onClick={() => setDrawerOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
           <Link
-            href={siteConfig.externalUrl}
+            href={urlConfig.externalUrl}
             rel="noopener noreferrer"
             target="_blank"
             className="h-full"
@@ -60,7 +72,7 @@ export default function HeaderPrincipal() {
         {/* Mobile: logo derecha */}
         <div className="flex items-center xl:hidden">
           <Link
-            href={siteConfig.externalUrl}
+            href={urlConfig.externalUrl}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -89,6 +101,16 @@ export default function HeaderPrincipal() {
             <X />
             <ThemeSwitcher />
           </div>
+          {HeaderDerecha.map((item, index) => (
+            <Link
+              key={index}
+              href={item.href}
+              className="text-base opacity-70 transition-opacity hover:opacity-100"
+              onClick={() => setDrawerOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
           <button
             onClick={() => setDrawerOpen(false)}
             aria-label="Cerrar menú"
@@ -100,13 +122,6 @@ export default function HeaderPrincipal() {
 
         {/* Links de navegación */}
         <nav className="flex flex-col gap-5 px-4 py-5">
-          <Link
-            href={siteConfig.homeUrl}
-            className="text-base opacity-70 transition-opacity hover:opacity-100"
-            onClick={() => setDrawerOpen(false)}
-          >
-            Home
-          </Link>
         </nav>
       </div>
     </>
